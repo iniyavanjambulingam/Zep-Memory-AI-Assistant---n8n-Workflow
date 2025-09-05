@@ -1,6 +1,7 @@
 # Zep-Memory-AI-Assistant---n8n-Workflow
 
-  <img width="695" height="419" alt="image" src="https://github.com/user-attachments/assets/9eb3d3f3-48ab-422e-a185-e46595dd60d4" />
+ <img width="694" height="425" alt="image" src="https://github.com/user-attachments/assets/8f4459ce-5d68-42a4-aaea-d6bb06e91680" />
+
 
 
 A sophisticated n8n workflow that creates a memory-enabled AI assistant using Zep Cloud's graph memory system. This workflow allows the AI to remember and recall information across conversations, providing a more personalized and contextual experience.
