@@ -1,0 +1,277 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -3472,
+        912
+      ],
+      "id": "00fb9106-bfa7-4a49-8410-4d8e113b3404",
+      "name": "GG Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "3Hcwnd3kUzFUj7kB",
+          "name": "telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.getzep.com/api/v2/graph/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Api-Key \"your own zep api key\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "inin8n"
+            },
+            {
+              "name": "query",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "scope",
+              "value": "edges"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -3136,
+        912
+      ],
+      "id": "865cf71d-583e-4054-99df-1319b1baa698",
+      "name": "graph/GET1"
+    },
+    {
+      "parameters": {
+        "model": "=deepseek/deepseek-v3.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatVercelAiGateway",
+      "typeVersion": 1,
+      "position": [
+        -3296,
+        912
+      ],
+      "id": "c46f1bfb-d1e8-45bb-9ef7-ba0ba8e5a1df",
+      "name": "deepseek/deepseek-v3.",
+      "credentials": {
+        "vercelAiGatewayApi": {
+          "id": "Hz12LiIsMaKH88LB",
+          "name": "n8n testing August 22"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## ZEP Cloud ##\n\nPost Node: Save Memory\n\nGet Node: Search Query",
+        "height": 512,
+        "width": 832,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3584,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "f3495208-4c78-4ab1-bbc5-a7f0c4e6e647",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.getzep.com/api/v2/graph",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Api-Key \"your own zep api key\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "=inin8n"
+            },
+            {
+              "name": "data",
+              "value": "={{ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "type",
+              "value": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -3008,
+        912
+      ],
+      "id": "5bb1cf15-dc18-4d31-b3f3-df63a47cbec5",
+      "name": "graph/post3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.getzep.com/api/v2/users",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Api-Key \"your own zep api key\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"user_id\": \"Dummy user id\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3504,
+        320
+      ],
+      "id": "19587965-71ba-4d76-9594-20e698485ccb",
+      "name": "Zep user id creation1"
+    },
+    {
+      "parameters": {
+        "content": "## Run this Node Once to Set Up ZEP user id",
+        "height": 300,
+        "width": 680,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3584,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "5ada2191-18e5-4cc3-81d5-5ac9c3e68146",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nuser:{{ $('When chat message received').item.json.chatInput }}\n\nYou are a memory-enabled assistant.  \nYou have access to two HTTP tools connected to ZEP:\n\n1. graph/post1  \n   - Purpose: Append new messages or facts to the user's memory graph.  \n   - Use when you need to store what the user says or what you infer.  \n   - Request format:\n  {\n    \"user_id\": \"inin8n\",\n    \"graph_id\": \"<graph_id if available>\",\n    \"type\": \"message\",\n    \"data\": \"user:{{ $('When chat message received').item.json.chatInput }} \"\n  }\n\n2. graph/GET  \n   - Purpose: Search the user’s memory graph.  \n   - Use when you need to recall facts, details, or past conversations.  \n   - Request format:\n     {\n       \"user_id\": \"inin8n\",\n       \"query\": \"<natural language question or keyword>\",\n       \"scope\": \"edges\"\n     }\n\nYour task:  \n- Store new user inputs in `graph/post1`.  \n- Retrieve information with `graph/GET` if the user asks about something that might already exist in memory.  \n- Always provide the final answer to the user in plain text after using the tools.  \n",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -3216,
+        688
+      ],
+      "id": "394ed62a-2825-4ffe-aada-03640b981318",
+      "name": "Zep Mind Memory Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -3504,
+        688
+      ],
+      "id": "a10535b7-75ee-41ff-9666-4cd4cf35cc3d",
+      "name": "When chat message received",
+      "webhookId": "1c0cb618-3a19-462e-b652-670331247819"
+    }
+  ],
+  "connections": {
+    "GG Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Zep Mind Memory Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "graph/GET1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Zep Mind Memory Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek/deepseek-v3.": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Zep Mind Memory Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "graph/post3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Zep Mind Memory Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Zep Mind Memory Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "67849de66331aaa2dca6a4f3cbf793b274f923d94e4d9cdaae2e5d9aebaff626"
+  }
+}
